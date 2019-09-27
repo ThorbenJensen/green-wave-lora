@@ -1,4 +1,5 @@
 import time
+import requests
 
 import board
 import busio
@@ -17,10 +18,26 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
 
-i = 1
+url = "http://172.16.2.62/seconds_phase_left"
+
 while True:
-    rfm9x.send(bytes(f"Hello world {i}!\r\n","utf-8"))
-    print('Sent Hello World message!')
-    time.sleep(3)
-    i += 1
+
+   response = requests.get(url=url)
+   green_string = None
+
+   if response.json()["is_green"]:
+       green_string = "1"
+   else:
+       green_string = "0"
+
+   lora_packet = ";".join([
+        green_string,
+        str("{:.2f}".format(response.json()["seconds_phase_left"])),
+        str("{:.0f}".format(response.json()["seconds_phase_total"]))
+   ])
+
+   rfm9x.send(bytes(lora_packet,"utf-8"))
+   print('Sent: ', lora_packet)
+   time.sleep(3)
+
 

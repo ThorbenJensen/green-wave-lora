@@ -29,9 +29,10 @@ while True:
         print('Received (raw bytes): {0}'.format(packet))
         packet_text = str(packet, 'ascii')
         print('Received (ASCII): {0}'.format(packet_text))
-        [green, seconds_left] = packet_text.split(";")
+        [green, seconds_left, seconds_total] = packet_text.split(";")
         print("green:", green)
         print("seconds left:", seconds_left)
+        print("seconds total:", seconds_total)
         # Also read the RSSI (signal strength) of the last received message and
         # print it.
         rssi = rfm9x.rssi
