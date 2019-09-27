@@ -38,6 +38,6 @@ while True:
 
    rfm9x.send(bytes(lora_packet,"utf-8"))
    print('Sent: ', lora_packet)
-   time.sleep(3)
+   time.sleep(1)
 
 
