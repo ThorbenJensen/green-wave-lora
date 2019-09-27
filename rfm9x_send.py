@@ -1,3 +1,5 @@
+import time
+
 import board
 import busio
 import digitalio
@@ -15,6 +17,10 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
 
-rfm9x.send(bytes("Hello world!\r\n","utf-8"))
-print('Sent Hello World message!')
+i = 1
+while True:
+    rfm9x.send(bytes(f"Hello world {i}!\r\n","utf-8"))
+    print('Sent Hello World message!')
+    time.sleep(3)
+    i += 1
 
