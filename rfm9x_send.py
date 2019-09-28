@@ -21,7 +21,7 @@ spi = busio.SPI(board.SCK, MOSI=board.MOSI, MISO=board.MISO)
 
 rfm9x = adafruit_rfm9x.RFM9x(spi, CS, RESET, RADIO_FREQ_MHZ)
 
-url = "http://172.16.2.107/seconds_phase_left"
+url = "http://localhost/seconds_phase_left"
 
 while True:
 
