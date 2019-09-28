@@ -2,6 +2,7 @@
 
 import time
 import requests
+import sys
 
 import board
 import busio
@@ -24,22 +25,32 @@ url = "http://172.16.2.107/seconds_phase_left"
 
 while True:
 
-   response = requests.get(url=url)
-   green_string = None
+    try:
+        response = requests.get(url=url, timeout=3)
+    except KeyboardInterrupt:
+        raise
+    except (ConnectionError, requests.exceptions.ConnectionError, requests.exceptions.ConnectTimeout) as e:
+        print(f"Connection error: {e}. Retrying.")
+        continue
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        continue
+    green_string = None
 
-   if response.json()["is_green"]:
-       green_string = "1"
-   else:
-       green_string = "0"
+    if response.json()["is_green"]:
+        green_string = "1"
+    else:
+        green_string = "0"
 
-   lora_packet = ";".join([
-        green_string,
-        str("{:.2f}".format(response.json()["seconds_phase_left"])),
-        str("{:.0f}".format(response.json()["seconds_phase_total"]))
-   ])
+    lora_packet = ";".join(
+        [
+            green_string,
+            str("{:.2f}".format(response.json()["seconds_phase_left"])),
+            str("{:.0f}".format(response.json()["seconds_phase_total"])),
+        ]
+    )
 
-   rfm9x.send(bytes(lora_packet,"utf-8"))
-   print('Sent: ', lora_packet)
-   time.sleep(0.65)
-
+    rfm9x.send(bytes(lora_packet, "utf-8"))
+    print("Sent: ", lora_packet)
+    time.sleep(0.65)
 
