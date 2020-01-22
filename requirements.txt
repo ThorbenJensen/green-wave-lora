@@ -1,0 +1,9 @@
+board
+busio
+digitalio
+adafruit_rfm9x
+# dev
+black
+jupyter
+pylama
+rope
